@@ -17,6 +17,7 @@ public class Proposta {
 	public Long	id;
 	
 	@NotBlank
+	@Column(unique = true, nullable = false)
 	public String documento;
 	
 	@NotBlank

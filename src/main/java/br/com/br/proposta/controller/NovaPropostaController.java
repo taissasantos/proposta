@@ -1,10 +1,12 @@
 package br.com.br.proposta.controller;
 
 import java.net.URI;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,13 +26,22 @@ public class NovaPropostaController {
 	@PostMapping(value ="/api/proposta")
 	public ResponseEntity<?>novaProposta(@RequestBody @Valid NovaPropostaRequest request, 
 			UriComponentsBuilder uri){
+		
 		Proposta proposta = request.toModel();
-		repository.save(proposta);
 		
-		URI location = uri.path("/api/proposta/{id}")
-				.buildAndExpand(proposta.getId()).toUri();
+		Optional<Proposta> optional = repository.findByDocumento(request.documento);
 		
-		return ResponseEntity.created(location).build();
+		if(optional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+		} else {
+			
+			repository.save(proposta);
+			
+			URI location = uri.path("/api/proposta/{id}")
+					.buildAndExpand(proposta.getId()).toUri();
+			
+			return ResponseEntity.created(location).build();
+		}
 		
 		
 	}
