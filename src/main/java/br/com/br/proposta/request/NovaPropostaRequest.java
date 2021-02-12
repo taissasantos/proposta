@@ -1,5 +1,7 @@
 package br.com.br.proposta.request;
 
+import java.math.BigDecimal;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -10,7 +12,7 @@ import br.com.br.proposta.validator.CPFOuCNPJ;
 public class NovaPropostaRequest {
 	
 	@NotBlank(message = "Insira um documento")
-	@CPFOuCNPJ
+	@CPFOuCNPJ(domainClass = Proposta.class , fieldName = "documento")
 	public String documento;
 	
 	@NotBlank(message = "Insira o email")
@@ -24,12 +26,12 @@ public class NovaPropostaRequest {
 	public String endereco;
 	
 	@Positive(message = "Insira o salário")
-	public Double salario;
+	public BigDecimal salario;
 	
 	public NovaPropostaRequest() {}
 
 	public NovaPropostaRequest(@NotBlank String documento, @NotBlank @Email String email, @NotBlank String nome,
-			@NotBlank String endereco, @Positive @NotBlank Double salario) {
+			@NotBlank String endereco, @Positive @NotBlank BigDecimal salario) {
 		this.documento = documento;
 		this.email = email;
 		this.nome = nome;
@@ -53,13 +55,14 @@ public class NovaPropostaRequest {
 		return endereco;
 	}
 
-	public Double getSalario() {
+	public BigDecimal getSalario() {
 		return salario;
 	}
 
 	public Proposta toModel() {
 		return new Proposta(documento, email, nome, endereco, salario);
 	}
+
 	
 	
 	
